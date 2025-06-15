@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Code2, Search, Github, Star } from 'lucide-react';
 
 interface HeaderProps {
@@ -7,6 +7,21 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ searchQuery, onSearchChange }) => {
+  const [stars, setStars] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch("https://api.github.com/repos/briocheeeee/ComponentCraft")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.stargazers_count !== undefined) {
+          setStars(data.stargazers_count);
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to fetch GitHub stars", err);
+      });
+  }, []);
+
   return (
     <header className="bg-white/95 backdrop-blur-xl border-b border-gray-200/50 sticky top-0 z-50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -22,7 +37,7 @@ export const Header: React.FC<HeaderProps> = ({ searchQuery, onSearchChange }) =
               <p className="text-sm text-gray-500 font-medium">Premium UI Components & Code Snippets</p>
             </div>
           </div>
-          
+
           <div className="flex items-center space-x-6">
             <div className="relative max-w-md w-full">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -36,32 +51,35 @@ export const Header: React.FC<HeaderProps> = ({ searchQuery, onSearchChange }) =
                 className="block w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl leading-5 bg-gray-50/50 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white transition-all duration-200 text-sm"
               />
             </div>
-            
-<div className="flex items-center space-x-3">
-  <a
-    href="https://github.com/briocheeeee/ComponentCraft"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-gray-900 transition-colors duration-200"
-  >
-    <Github className="w-5 h-5" />
-    <span className="hidden sm:inline text-sm font-medium">GitHub</span>
-  </a>
 
-  <button
-    onClick={() => {
-      window.open("https://github.com/briocheeeee/ComponentCraft", "_blank");
-      setTimeout(() => {
-        alert("Click the ⭐️ button to add a star!");
-      }, 500);
-    }}
-    className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-lg hover:from-yellow-500 hover:to-orange-600 transition-all duration-200 shadow-md hover:shadow-lg"
-  >
-    <Star className="w-4 h-4" />
-    <span className="text-sm font-medium">Star</span>
-  </button>
-</div>
+            <div className="flex items-center space-x-3">
+              <a
+                href="https://github.com/briocheeeee/ComponentCraft"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-gray-900 transition-colors duration-200"
+              >
+                <Github className="w-5 h-5" />
+                <span className="hidden sm:inline text-sm font-medium">GitHub</span>
+              </a>
+
+              <button
+                onClick={() => {
+                  window.open("https://github.com/briocheeeee/ComponentCraft", "_blank");
+                  setTimeout(() => {
+                    alert("Click the ⭐️ button to add a star!");
+                  }, 500);
+                }}
+                className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-lg hover:from-yellow-500 hover:to-orange-600 transition-all duration-200 shadow-md hover:shadow-lg"
+              >
+                <Star className="w-4 h-4" />
+<span className="text-sm font-medium whitespace-nowrap">
+  Star{stars !== null ? ` (${stars})` : ''}
+</span>
+
+              </button>
             </div>
+          </div>
         </div>
       </div>
     </header>
